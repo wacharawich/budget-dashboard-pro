@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/table";
 import { formatNumber, type BudgetRow } from "@/services/sheetData";
 import {
-  Search, ArrowUpDown, ArrowUp, ArrowDown, FileText, FileDown, RefreshCw,
+  Search, ArrowUpDown, ArrowUp, ArrowDown, FileText, FileDown, RefreshCw, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { exportToPdf, exportToCsv } from "./ExportUtils";
@@ -20,6 +20,8 @@ interface DataTableProps {
 
 type SortField = keyof BudgetRow | null;
 type SortDir = "asc" | "desc";
+
+const ROWS_PER_PAGE = 20;
 
 const COLUMNS: { key: keyof BudgetRow; label: string }[] = [
   { key: "missionGroup", label: "กลุ่มภารกิจ" },
@@ -37,6 +39,7 @@ export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps)
   const [search, setSearch] = React.useState("");
   const [sortField, setSortField] = React.useState<SortField>(null);
   const [sortDir, setSortDir] = React.useState<SortDir>("asc");
+  const [page, setPage] = React.useState(0);
 
   const filtered = React.useMemo(() => {
     let result = data;
@@ -78,6 +81,14 @@ export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps)
       <ArrowDown className="size-3 text-blue-500" />
     );
   };
+
+  // Reset page when search/sort changes
+  React.useEffect(() => {
+    setPage(0);
+  }, [search, sortField, sortDir]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
+  const pagedData = filtered.slice(page * ROWS_PER_PAGE, (page + 1) * ROWS_PER_PAGE);
 
   return (
     <div className="rounded-2xl border border-white/40 bg-white/50 shadow-lg backdrop-blur-xl">
@@ -174,7 +185,7 @@ export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps)
                   </TableCell>
                 </TableRow>
               ) : (
-                filtered.map((row) => (
+                pagedData.map((row) => (
                   <TableRow key={row.id} className="border-b border-white/20 hover:bg-white/30 transition-colors">
                     {COLUMNS.map((col) => {
                       const val = row[col.key];
@@ -209,6 +220,55 @@ export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps)
           </Table>
         </div>
       </TooltipProvider>
+
+      {/* Pagination */}
+      {filtered.length > ROWS_PER_PAGE && (
+        <div className="flex items-center justify-between border-t border-white/30 px-4 py-3">
+          <span className="text-xs text-gray-400">
+            หน้า {page + 1} จาก {totalPages}
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="inline-flex size-8 items-center justify-center rounded-lg border border-white/40 bg-white/60 text-gray-600 backdrop-blur-sm transition-all hover:bg-white/80 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i)
+              .filter((i) => i === 0 || i === totalPages - 1 || Math.abs(i - page) <= 2)
+              .reduce<(number | "ellipsis")[]>((acc, i, idx, arr) => {
+                if (idx > 0 && i - (arr[idx - 1] as number) > 1) acc.push("ellipsis");
+                acc.push(i);
+                return acc;
+              }, [])
+              .map((item, idx) =>
+                item === "ellipsis" ? (
+                  <span key={`e${idx}`} className="size-8 inline-flex items-center justify-center text-xs text-gray-400">...</span>
+                ) : (
+                  <button
+                    key={item}
+                    onClick={() => setPage(item)}
+                    className={`inline-flex size-8 items-center justify-center rounded-lg text-xs font-medium backdrop-blur-sm transition-all ${
+                      page === item
+                        ? "bg-cyan-500 text-white shadow-md shadow-cyan-200"
+                        : "border border-white/40 bg-white/60 text-gray-600 hover:bg-white/80"
+                    }`}
+                  >
+                    {item + 1}
+                  </button>
+                )
+              )}
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page >= totalPages - 1}
+              className="inline-flex size-8 items-center justify-center rounded-lg border border-white/40 bg-white/60 text-gray-600 backdrop-blur-sm transition-all hover:bg-white/80 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
