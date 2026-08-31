@@ -2,11 +2,13 @@ import * as React from "react";
 import { OverviewCards } from "@/components/dashboard/OverviewCards";
 import { ComparisonChart } from "@/components/dashboard/ComparisonChart";
 import { CategoryChart } from "@/components/dashboard/CategoryChart";
+import { DonutChart } from "@/components/dashboard/DonutChart";
+import { InsightsSection } from "@/components/dashboard/InsightsSection";
 import { Top10Section } from "@/components/dashboard/Top10Section";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { MultiSelectFilter } from "@/components/dashboard/MultiSelectFilter";
 import { fetchSheetData, type BudgetRow, formatDateBuddhist } from "@/services/sheetData";
-import { RefreshCw, BarChart3 } from "lucide-react";
+import { RefreshCw, BarChart3, AlertTriangle } from "lucide-react";
 
 function uniqueSorted(data: BudgetRow[], field: keyof BudgetRow): string[] {
   const set = new Set(data.map((r) => String(r[field])).filter(Boolean));
@@ -25,6 +27,7 @@ export default function Dashboard() {
   const [filterCategory, setFilterCategory] = React.useState<string[]>([]);
   const [filterType, setFilterType] = React.useState<string[]>([]);
   const [filterItem, setFilterItem] = React.useState<string[]>([]);
+  const [showOverBudgetOnly, setShowOverBudgetOnly] = React.useState(false);
 
   const loadData = React.useCallback(async () => {
     setSyncStatus("syncing");
@@ -53,9 +56,10 @@ export default function Dashboard() {
       if (filterCategory.length > 0 && !filterCategory.includes(row.category)) return false;
       if (filterType.length > 0 && !filterType.includes(row.type)) return false;
       if (filterItem.length > 0 && !filterItem.includes(row.item)) return false;
+      if (showOverBudgetOnly && row.used <= row.totalPlan) return false;
       return true;
     });
-  }, [data, filterMissionGroup, filterWorkGroup, filterDepartment, filterCategory, filterType, filterItem]);
+  }, [data, filterMissionGroup, filterWorkGroup, filterDepartment, filterCategory, filterType, filterItem, showOverBudgetOnly]);
 
   const filterOptions = React.useMemo(() => ({
     missionGroup: uniqueSorted(data, "missionGroup"),
@@ -135,14 +139,27 @@ export default function Dashboard() {
         <div className="relative z-20 mt-6 rounded-2xl border border-white/40 bg-white/50 p-4 shadow-lg backdrop-blur-xl">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-700">ตัวกรองข้อมูล</h3>
-            {hasActiveFilters && (
+            <div className="flex items-center gap-3">
               <button
-                onClick={clearAllFilters}
-                className="text-xs text-cyan-600 hover:text-cyan-800 transition-colors"
+                onClick={() => setShowOverBudgetOnly(!showOverBudgetOnly)}
+                className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+                  showOverBudgetOnly
+                    ? "border-rose-300 bg-rose-50 text-rose-600 shadow-sm"
+                    : "border-white/40 bg-white/60 text-gray-500 hover:bg-white/80"
+                }`}
               >
-                ล้างตัวกรองทั้งหมด
+                <AlertTriangle className="size-3.5" />
+                เกินงบเท่านั้น
               </button>
-            )}
+              {hasActiveFilters && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-xs text-cyan-600 hover:text-cyan-800 transition-colors"
+                >
+                  ล้างตัวกรองทั้งหมด
+                </button>
+              )}
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             <MultiSelectFilter
@@ -190,16 +207,24 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Insights */}
+        <div className="mt-6">
+          <InsightsSection data={filteredData} />
+        </div>
+
         {/* Charts Grid */}
         <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
           <ComparisonChart data={filteredData} />
           <CategoryChart data={filteredData} />
         </div>
 
-        {/* Top 10 Section */}
-        <div className="mt-6">
+        {/* Donut + Top 10 */}
+        <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <DonutChart data={filteredData} />
           <Top10Section data={filteredData} />
         </div>
+
+
 
         {/* Data Table */}
         <div className="mt-6">
