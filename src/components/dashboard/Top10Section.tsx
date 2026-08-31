@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
 import { topNByPlan, formatCompactNumber, type BudgetRow } from "@/services/sheetData";
 
@@ -8,11 +8,16 @@ interface Top10SectionProps {
   data: BudgetRow[];
 }
 
+const PER_ITEM_COLORS = [
+  "#06b6d4", "#f59e0b", "#8b5cf6", "#10b981", "#f43f5e",
+  "#3b82f6", "#ec4899", "#14b8a6", "#f97316", "#6366f1",
+];
+
 const CHART_DIMENSIONS = [
   { key: "missionGroup" as const, label: "กลุ่มภารกิจ", color: "#06b6d4" },
   { key: "workGroup" as const, label: "กลุ่มงาน", color: "#8b5cf6" },
   { key: "department" as const, label: "หน่วยงาน", color: "#0ea5e9" },
-  { key: "category" as const, label: "หมวด", color: "#f59e0b" },
+  { key: "category" as const, label: "หมวด", color: "#f59e0b", multiColor: true as const },
   { key: "type" as const, label: "ประเภท", color: "#14b8a6" },
   { key: "item" as const, label: "รายการ", color: "#f43f5e" },
 ];
@@ -21,10 +26,12 @@ function HorizontalBarChart({
   data,
   label,
   color,
+  multiColor = false,
 }: {
   data: { name: string; totalPlan: number; used: number }[];
   label: string;
   color: string;
+  multiColor?: boolean;
 }) {
   if (data.length === 0) {
     return (
@@ -77,8 +84,18 @@ function HorizontalBarChart({
                 );
               }}
             />
-            <Bar dataKey="totalPlan" name="แผน" fill={color} radius={[0, 4, 4, 0]} barSize={8} />
-            <Bar dataKey="used" name="ใช้ไป" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={8} />
+            <Bar dataKey="totalPlan" name="แผน" radius={[0, 4, 4, 0]} barSize={8}>
+              {multiColor && data.map((_, i) => (
+                <Cell key={i} fill={PER_ITEM_COLORS[i % PER_ITEM_COLORS.length]} />
+              ))}
+              {!multiColor && <Cell fill={color} />}
+            </Bar>
+            <Bar dataKey="used" name="ใช้ไป" radius={[0, 4, 4, 0]} barSize={8}>
+              {multiColor && data.map((_, i) => (
+                <Cell key={i} fill={PER_ITEM_COLORS[i % PER_ITEM_COLORS.length]} fillOpacity={0.45} />
+              ))}
+              {!multiColor && <Cell fill="#f59e0b" />}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -102,6 +119,7 @@ export function Top10Section({ data }: Top10SectionProps) {
               data={topData}
               label={dim.label}
               color={dim.color}
+              multiColor={dim.multiColor}
             />
           );
         })}
