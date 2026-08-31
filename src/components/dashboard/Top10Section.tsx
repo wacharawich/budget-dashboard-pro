@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { topNByPlan, formatCompactNumber, type BudgetRow } from "@/services/sheetData";
 
@@ -8,16 +8,11 @@ interface Top10SectionProps {
   data: BudgetRow[];
 }
 
-const PER_ITEM_COLORS = [
-  "#06b6d4", "#f59e0b", "#8b5cf6", "#10b981", "#f43f5e",
-  "#3b82f6", "#ec4899", "#14b8a6", "#f97316", "#6366f1",
-];
-
 const CHART_DIMENSIONS = [
   { key: "missionGroup" as const, label: "กลุ่มภารกิจ", color: "#06b6d4" },
   { key: "workGroup" as const, label: "กลุ่มงาน", color: "#8b5cf6" },
   { key: "department" as const, label: "หน่วยงาน", color: "#0ea5e9" },
-  { key: "category" as const, label: "หมวด", color: "#f59e0b", multiColor: true as const },
+  { key: "category" as const, label: "หมวด", color: "#f59e0b" },
   { key: "type" as const, label: "ประเภท", color: "#14b8a6" },
   { key: "item" as const, label: "รายการ", color: "#f43f5e" },
 ];
@@ -26,12 +21,10 @@ function HorizontalBarChart({
   data,
   label,
   color,
-  multiColor = false,
 }: {
   data: { name: string; totalPlan: number; used: number }[];
   label: string;
   color: string;
-  multiColor?: boolean;
 }) {
   if (data.length === 0) {
     return (
@@ -44,13 +37,7 @@ function HorizontalBarChart({
 
   return (
     <div className="rounded-2xl border border-white/40 bg-white/50 p-4 shadow-lg backdrop-blur-xl">
-      <div className="mb-3 flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">TOP 10 {label}</h4>
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 text-[10px] text-gray-500"><span className="inline-block size-2 rounded-sm" style={{ backgroundColor: color }} />แผน</span>
-          <span className="flex items-center gap-1 text-[10px] text-gray-500"><span className="inline-block size-2 rounded-sm bg-amber-500" />ใช้ไป</span>
-        </div>
-      </div>
+      <h4 className="mb-3 text-sm font-semibold text-gray-700">TOP 10 {label}</h4>
       <div className="h-[280px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -77,25 +64,13 @@ function HorizontalBarChart({
                 const item = payload[0]?.payload;
                 return (
                   <div className="rounded-lg border border-white/50 bg-white/90 px-3 py-2 shadow-xl backdrop-blur-lg">
-                    <p className="mb-1 text-xs font-medium text-gray-700">{item?.name}</p>
-                    <p className="text-xs text-cyan-600">แผน: {formatCompactNumber(item?.totalPlan || 0)}</p>
-                    <p className="text-xs text-amber-600">ใช้ไป: {formatCompactNumber(item?.used || 0)}</p>
+                    <p className="text-xs font-medium text-gray-700">{item?.name}</p>
+                    <p className="text-xs text-blue-600">แผน: {formatCompactNumber(item?.totalPlan || 0)}</p>
                   </div>
                 );
               }}
             />
-            <Bar dataKey="totalPlan" name="แผน" radius={[0, 4, 4, 0]} barSize={8}>
-              {multiColor && data.map((_, i) => (
-                <Cell key={i} fill={PER_ITEM_COLORS[i % PER_ITEM_COLORS.length]} />
-              ))}
-              {!multiColor && <Cell fill={color} />}
-            </Bar>
-            <Bar dataKey="used" name="ใช้ไป" radius={[0, 4, 4, 0]} barSize={8}>
-              {multiColor && data.map((_, i) => (
-                <Cell key={i} fill={PER_ITEM_COLORS[i % PER_ITEM_COLORS.length]} fillOpacity={0.45} />
-              ))}
-              {!multiColor && <Cell fill="#f59e0b" />}
-            </Bar>
+            <Bar dataKey="totalPlan" fill={color} radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -119,7 +94,6 @@ export function Top10Section({ data }: Top10SectionProps) {
               data={topData}
               label={dim.label}
               color={dim.color}
-              multiColor={dim.multiColor}
             />
           );
         })}
