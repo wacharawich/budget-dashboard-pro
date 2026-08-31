@@ -62,7 +62,7 @@ export function MultiSelectFilter({
           "flex h-9 w-full items-center justify-between gap-1 rounded-lg border px-3 py-1.5 text-sm",
           "bg-white/60 backdrop-blur-sm border-white/40",
           "hover:bg-white/80 transition-all duration-200",
-          "focus:outline-none focus:ring-2 focus:ring-blue-300/50",
+          "focus:outline-none focus:ring-2 focus:ring-cyan-300/50",
           "text-gray-700"
         )}
       >
@@ -100,7 +100,7 @@ export function MultiSelectFilter({
                   className={cn(
                     "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors",
                     selected.includes(option)
-                      ? "bg-blue-50 text-blue-700"
+                      ? "bg-cyan-50 text-cyan-700"
                       : "hover:bg-gray-50 text-gray-700"
                   )}
                 >
@@ -108,7 +108,7 @@ export function MultiSelectFilter({
                     className={cn(
                       "flex size-4 shrink-0 items-center justify-center rounded border transition-colors",
                       selected.includes(option)
-                        ? "bg-blue-500 border-blue-500"
+                        ? "bg-cyan-500 border-cyan-500"
                         : "border-gray-300 bg-white"
                     )}
                   >
@@ -167,7 +167,7 @@ export function NumberRangeFilter({
           value={valueMin || ""}
           onChange={(e) => onChange(Number(e.target.value) || min, valueMax)}
           placeholder="ต่ำสุด"
-          className="h-8 w-full rounded-md border border-white/40 bg-white/60 px-2 text-xs backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-300/50"
+          className="h-8 w-full rounded-md border border-white/40 bg-white/60 px-2 text-xs backdrop-blur-sm focus:outline-none          focus:ring-2 focus:ring-cyan-300/50"
         />
         <span className="text-gray-400 text-xs">-</span>
         <input
@@ -175,7 +175,7 @@ export function NumberRangeFilter({
           value={valueMax || ""}
           onChange={(e) => onChange(valueMin, Number(e.target.value) || max)}
           placeholder="สูงสุด"
-          className="h-8 w-full rounded-md border border-white/40 bg-white/60 px-2 text-xs backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-300/50"
+          className="h-8 w-full rounded-md border border-white/40 bg-white/60 px-2 text-xs backdrop-blur-sm focus:outline-none          focus:ring-2 focus:ring-cyan-300/50"
         />
       </div>
     </div>

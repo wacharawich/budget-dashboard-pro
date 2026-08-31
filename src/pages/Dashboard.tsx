@@ -83,12 +83,12 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-cyan-50 to-teal-50">
       {/* Background decorative elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-blue-200/20 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-purple-200/20 blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-indigo-100/30 blur-3xl" />
+        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-sky-200/25 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-teal-200/25 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-amber-100/20 blur-3xl" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
@@ -96,15 +96,15 @@ export default function Dashboard() {
         <header className="mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500/10 backdrop-blur-sm border border-blue-200/50">
-                <BarChart3 className="size-5 text-blue-600" />
+              <div className="flex size-10 items-center justify-center rounded-xl bg-cyan-500/10 backdrop-blur-sm border border-cyan-200/50">
+                <BarChart3 className="size-5 text-cyan-600" />
               </div>
               <div>
                 <h1 className="text-lg font-bold text-gray-800 tracking-tight">
-                  ทะเบียนคุมแผนจัดซื้อจัดจ้าง
+                  จัดซื้อจัดจ้างใช้ไป
                 </h1>
                 <p className="text-xs text-gray-500">
-                  โรงพยาบาลนางรอง — ข้อมูล ณ {formatDateBuddhist(new Date())}
+                  โรงพยาบาลนางรอง · ข้อมูล ณ {formatDateBuddhist(new Date())}
                 </p>
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function Dashboard() {
             {hasActiveFilters && (
               <button
                 onClick={clearAllFilters}
-                className="text-xs text-blue-500 hover:text-blue-700 transition-colors"
+                className="text-xs text-cyan-600 hover:text-cyan-800 transition-colors"
               >
                 ล้างตัวกรองทั้งหมด
               </button>
@@ -207,7 +207,7 @@ export default function Dashboard() {
 
         {/* Footer */}
         <footer className="mt-8 pb-6 text-center text-xs text-gray-400">
-          ทะเบียนคุมแผนจัดซื้อจัดจ้าง โรงพยาบาลนางรอง — Data Analytics Dashboard
+          จัดซื้อจัดจ้างใช้ไป · โรงพยาบาลนางรอง
         </footer>
       </div>
     </div>

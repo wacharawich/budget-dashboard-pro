@@ -9,12 +9,12 @@ interface Top10SectionProps {
 }
 
 const CHART_DIMENSIONS = [
-  { key: "missionGroup" as const, label: "กลุ่มภารกิจ", color: "#3b82f6" },
+  { key: "missionGroup" as const, label: "กลุ่มภารกิจ", color: "#06b6d4" },
   { key: "workGroup" as const, label: "กลุ่มงาน", color: "#8b5cf6" },
-  { key: "department" as const, label: "หน่วยงาน", color: "#06b6d4" },
+  { key: "department" as const, label: "หน่วยงาน", color: "#0ea5e9" },
   { key: "category" as const, label: "หมวด", color: "#f59e0b" },
-  { key: "type" as const, label: "ประเภท", color: "#10b981" },
-  { key: "item" as const, label: "รายการ", color: "#ef4444" },
+  { key: "type" as const, label: "ประเภท", color: "#14b8a6" },
+  { key: "item" as const, label: "รายการ", color: "#f43f5e" },
 ];
 
 function HorizontalBarChart({

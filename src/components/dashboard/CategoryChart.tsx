@@ -52,8 +52,8 @@ export function CategoryChart({ data }: CategoryChartProps) {
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: 12, fontFamily: "Prompt" }} />
-            <Bar dataKey="totalPlan" name="ยอดรวมแผน" fill="#6366f1" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="used" name="ใช้ไป" fill="#10b981" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="totalPlan" name="ยอดรวมแผน" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="used" name="ใช้ไป" fill="#f59e0b" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

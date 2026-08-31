@@ -72,7 +72,7 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
             className={cn(
               "rounded-full px-3 py-1 text-xs font-medium transition-all duration-200",
               i === activeDimension
-                ? "bg-blue-500 text-white shadow-md shadow-blue-200"
+                ? "bg-cyan-500 text-white shadow-md shadow-cyan-200"
                 : "bg-white/70 text-gray-600 hover:bg-white/90 border border-white/40"
             )}
           >
@@ -103,7 +103,7 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
             <Bar
               dataKey="totalPlan"
               name="ยอดรวมแผน"
-              fill="#3b82f6"
+              fill="#06b6d4"
               radius={[4, 4, 0, 0]}
               label={<CustomBarLabel x={0} y={0} width={0} value={0} />}
             />

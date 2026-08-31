@@ -35,11 +35,11 @@ export function exportToPdf(data: BudgetRow[]) {
   // Add title
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
-  doc.text("ทะเบียนคุมแผนจัดซื้อจัดจ้าง โรงพยาบาลนางรอง", 14, 12);
+  doc.text("จัดซื้อจัดจ้างใช้ไป โรงพยาบาลนางรอง", 14, 12);
 
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text("Data Analytics Dashboard", 14, 18);
+  doc.text("รายงานข้อมูลการจัดซื้อจัดจ้าง", 14, 18);
 
   // Try to add the logo as an image (may fail due to CORS)
   const img = new Image();
