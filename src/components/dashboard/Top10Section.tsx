@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
 import { topNByPlan, formatCompactNumber, type BudgetRow } from "@/services/sheetData";
 
@@ -37,7 +37,13 @@ function HorizontalBarChart({
 
   return (
     <div className="rounded-2xl border border-white/40 bg-white/50 p-4 shadow-lg backdrop-blur-xl">
-      <h4 className="mb-3 text-sm font-semibold text-gray-700">TOP 10 {label}</h4>
+      <div className="mb-3 flex items-center justify-between">
+        <h4 className="text-sm font-semibold text-gray-700">TOP 10 {label}</h4>
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1 text-[10px] text-gray-500"><span className="inline-block size-2 rounded-sm" style={{ backgroundColor: color }} />แผน</span>
+          <span className="flex items-center gap-1 text-[10px] text-gray-500"><span className="inline-block size-2 rounded-sm bg-amber-500" />ใช้ไป</span>
+        </div>
+      </div>
       <div className="h-[280px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -64,13 +70,15 @@ function HorizontalBarChart({
                 const item = payload[0]?.payload;
                 return (
                   <div className="rounded-lg border border-white/50 bg-white/90 px-3 py-2 shadow-xl backdrop-blur-lg">
-                    <p className="text-xs font-medium text-gray-700">{item?.name}</p>
-                    <p className="text-xs text-blue-600">แผน: {formatCompactNumber(item?.totalPlan || 0)}</p>
+                    <p className="mb-1 text-xs font-medium text-gray-700">{item?.name}</p>
+                    <p className="text-xs text-cyan-600">แผน: {formatCompactNumber(item?.totalPlan || 0)}</p>
+                    <p className="text-xs text-amber-600">ใช้ไป: {formatCompactNumber(item?.used || 0)}</p>
                   </div>
                 );
               }}
             />
-            <Bar dataKey="totalPlan" fill={color} radius={[0, 4, 4, 0]} />
+            <Bar dataKey="totalPlan" name="แผน" fill={color} radius={[0, 4, 4, 0]} barSize={8} />
+            <Bar dataKey="used" name="ใช้ไป" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={8} />
           </BarChart>
         </ResponsiveContainer>
       </div>
