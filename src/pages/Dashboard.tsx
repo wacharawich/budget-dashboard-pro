@@ -43,9 +43,10 @@ export default function Dashboard() {
     loadData();
   }, [loadData]);
 
-  // Filter data
+  // Filter data — exclude rows with empty รายการ
   const filteredData = React.useMemo(() => {
     return data.filter((row) => {
+      if (!row.item) return false;
       if (filterMissionGroup.length > 0 && !filterMissionGroup.includes(row.missionGroup)) return false;
       if (filterWorkGroup.length > 0 && !filterWorkGroup.includes(row.workGroup)) return false;
       if (filterDepartment.length > 0 && !filterDepartment.includes(row.department)) return false;
