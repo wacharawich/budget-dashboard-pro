@@ -2,7 +2,6 @@ import * as React from "react";
 import { OverviewCards } from "@/components/dashboard/OverviewCards";
 import { ComparisonChart } from "@/components/dashboard/ComparisonChart";
 import { CategoryChart } from "@/components/dashboard/CategoryChart";
-import { DonutChart } from "@/components/dashboard/DonutChart";
 import { InsightsSection } from "@/components/dashboard/InsightsSection";
 import { Top10Section } from "@/components/dashboard/Top10Section";
 import { DataTable } from "@/components/dashboard/DataTable";
@@ -218,9 +217,8 @@ export default function Dashboard() {
           <CategoryChart data={filteredData} />
         </div>
 
-        {/* Donut + Top 10 */}
-        <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <DonutChart data={filteredData} />
+        {/* Top 10 */}
+        <div className="mt-6">
           <Top10Section data={filteredData} />
         </div>
 
