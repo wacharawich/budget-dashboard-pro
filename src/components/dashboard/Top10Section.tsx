@@ -8,9 +8,16 @@ interface Top10SectionProps {
   data: BudgetRow[];
 }
 
-const PER_ITEM_COLORS = [
-  "#06b6d4", "#f59e0b", "#8b5cf6", "#10b981", "#f43f5e",
-  "#3b82f6", "#ec4899", "#14b8a6", "#f97316", "#6366f1",
+const PLAN_COLOR = "#10b981";
+const USED_COLOR = "#f97316";
+
+const PER_ITEM_PLAN_COLORS = [
+  "#10b981", "#34d399", "#059669", "#6ee7b7", "#047857",
+  "#a7f3d0", "#0d9488", "#2dd4bf", "#14b8a6", "#5eead4",
+];
+const PER_ITEM_USED_COLORS = [
+  "#f97316", "#fb923c", "#ea580c", "#fdba74", "#c2410c",
+  "#fed7aa", "#f59e0b", "#fbbf24", "#d97706", "#fcd34d",
 ];
 
 const CHART_DIMENSIONS = [
@@ -48,10 +55,10 @@ function HorizontalBarChart({
         <h4 className="text-sm font-semibold text-gray-700">TOP 10 {label}</h4>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 text-[10px] text-gray-500">
-            <span className="inline-block size-2 rounded-sm" style={{ backgroundColor: color }} />แผน
+            <span className="inline-block size-2 rounded-sm" style={{ backgroundColor: PLAN_COLOR }} />แผน
           </span>
           <span className="flex items-center gap-1 text-[10px] text-gray-500">
-            <span className="inline-block size-2 rounded-sm bg-amber-500" />ใช้ไป
+            <span className="inline-block size-2 rounded-sm" style={{ backgroundColor: USED_COLOR }} />ใช้ไป
           </span>
         </div>
       </div>
@@ -82,23 +89,23 @@ function HorizontalBarChart({
                 return (
                   <div className="rounded-lg border border-white/50 bg-white/90 px-3 py-2 shadow-xl backdrop-blur-lg">
                     <p className="mb-1 text-xs font-medium text-gray-700">{item?.name}</p>
-                    <p className="text-xs text-cyan-600">แผน: {formatCompactNumber(item?.totalPlan || 0)}</p>
-                    <p className="text-xs text-amber-600">ใช้ไป: {formatCompactNumber(item?.used || 0)}</p>
+                    <p className="text-xs" style={{ color: PLAN_COLOR }}>แผน: {formatCompactNumber(item?.totalPlan || 0)}</p>
+                    <p className="text-xs" style={{ color: USED_COLOR }}>ใช้ไป: {formatCompactNumber(item?.used || 0)}</p>
                   </div>
                 );
               }}
             />
             <Bar dataKey="totalPlan" name="แผน" radius={[0, 4, 4, 0]} barSize={8}>
               {multiColor && data.map((_, i) => (
-                <Cell key={i} fill={PER_ITEM_COLORS[i % PER_ITEM_COLORS.length]} />
+                <Cell key={i} fill={PER_ITEM_PLAN_COLORS[i % PER_ITEM_PLAN_COLORS.length]} />
               ))}
-              {!multiColor && <Cell fill={color} />}
+              {!multiColor && <Cell fill={PLAN_COLOR} />}
             </Bar>
             <Bar dataKey="used" name="ใช้ไป" radius={[0, 4, 4, 0]} barSize={8}>
               {multiColor && data.map((_, i) => (
-                <Cell key={i} fill={PER_ITEM_COLORS[i % PER_ITEM_COLORS.length]} fillOpacity={0.45} />
+                <Cell key={i} fill={PER_ITEM_USED_COLORS[i % PER_ITEM_USED_COLORS.length]} />
               ))}
-              {!multiColor && <Cell fill="#f59e0b" />}
+              {!multiColor && <Cell fill={USED_COLOR} />}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
@@ -128,10 +135,10 @@ function SummaryComparisonChart({ data }: { data: BudgetRow[] }) {
         <h4 className="text-base font-semibold text-gray-800">แผน vs ใช้ไป — เปรียบเทียบตามมิติ</h4>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 text-[10px] text-gray-500">
-            <span className="inline-block size-2 rounded-sm bg-cyan-500" />แผน
+            <span className="inline-block size-2 rounded-sm" style={{ backgroundColor: PLAN_COLOR }} />แผน
           </span>
           <span className="flex items-center gap-1 text-[10px] text-gray-500">
-            <span className="inline-block size-2 rounded-sm bg-amber-500" />ใช้ไป
+            <span className="inline-block size-2 rounded-sm" style={{ backgroundColor: USED_COLOR }} />ใช้ไป
           </span>
         </div>
       </div>
@@ -162,8 +169,8 @@ function SummaryComparisonChart({ data }: { data: BudgetRow[] }) {
                 );
               }}
             />
-            <Bar dataKey="totalPlan" name="totalPlan" fill="#06b6d4" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="used" name="used" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="totalPlan" name="totalPlan" fill={PLAN_COLOR} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="used" name="used" fill={USED_COLOR} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
