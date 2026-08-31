@@ -95,17 +95,15 @@ function HorizontalBarChart({
                 );
               }}
             />
-            <Bar dataKey="totalPlan" name="แผน" radius={[0, 4, 4, 0]} barSize={8}>
+            <Bar dataKey="totalPlan" name="แผน" fill={PLAN_COLOR} radius={[0, 4, 4, 0]} barSize={8}>
               {multiColor && data.map((_, i) => (
                 <Cell key={i} fill={PER_ITEM_PLAN_COLORS[i % PER_ITEM_PLAN_COLORS.length]} />
               ))}
-              {!multiColor && <Cell fill={PLAN_COLOR} />}
             </Bar>
-            <Bar dataKey="used" name="ใช้ไป" radius={[0, 4, 4, 0]} barSize={8}>
+            <Bar dataKey="used" name="ใช้ไป" fill={USED_COLOR} radius={[0, 4, 4, 0]} barSize={8}>
               {multiColor && data.map((_, i) => (
                 <Cell key={i} fill={PER_ITEM_USED_COLORS[i % PER_ITEM_USED_COLORS.length]} />
               ))}
-              {!multiColor && <Cell fill={USED_COLOR} />}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
