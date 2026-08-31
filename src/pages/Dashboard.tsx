@@ -131,7 +131,7 @@ export default function Dashboard() {
         <OverviewCards data={filteredData} />
 
         {/* Filters Section */}
-        <div className="mt-6 rounded-2xl border border-white/40 bg-white/50 p-4 shadow-lg backdrop-blur-xl">
+        <div className="relative z-20 mt-6 rounded-2xl border border-white/40 bg-white/50 p-4 shadow-lg backdrop-blur-xl">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-700">ตัวกรองข้อมูล</h3>
             {hasActiveFilters && (
