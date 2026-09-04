@@ -23,16 +23,16 @@ type SortDir = "asc" | "desc";
 
 const ROWS_PER_PAGE = 20;
 
-const COLUMNS: { key: keyof BudgetRow; label: string }[] = [
-  { key: "missionGroup", label: "กลุ่มภารกิจ" },
-  { key: "workGroup", label: "กลุ่มงาน" },
-  { key: "department", label: "หน่วยงาน" },
-  { key: "category", label: "หมวด" },
-  { key: "type", label: "ประเภท" },
-  { key: "item", label: "รายการ" },
-  { key: "totalPlan", label: "ยอดรวมแผน" },
-  { key: "used", label: "ใช้ไป" },
-  { key: "remaining", label: "คงเหลือ" },
+const COLUMNS: { key: keyof BudgetRow; label: string; width: string }[] = [
+  { key: "missionGroup", label: "กลุ่มภารกิจ", width: "140px" },
+  { key: "workGroup", label: "กลุ่มงาน", width: "130px" },
+  { key: "department", label: "หน่วยงาน", width: "120px" },
+  { key: "category", label: "หมวด", width: "100px" },
+  { key: "type", label: "ประเภท", width: "100px" },
+  { key: "item", label: "รายการ", width: "170px" },
+  { key: "totalPlan", label: "ยอดรวมแผน", width: "110px" },
+  { key: "used", label: "ใช้ไป", width: "100px" },
+  { key: "remaining", label: "คงเหลือ", width: "100px" },
 ];
 
 export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps) {
@@ -151,13 +151,14 @@ export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps)
       {/* Table */}
       <TooltipProvider>
         <div className="overflow-x-auto">
-          <Table>
+          <Table className="table-fixed">
             <TableHeader>
               <TableRow className="border-b border-white/30">
                 {COLUMNS.map((col) => (
                   <TableHead
                     key={col.key}
-                    className="cursor-pointer select-none hover:bg-white/50 transition-colors text-xs font-semibold text-gray-600"
+                    style={{ width: col.width, minWidth: col.width, maxWidth: col.width }}
+                    className="cursor-pointer select-none hover:bg-white/50 transition-colors text-xs font-semibold text-gray-600 overflow-hidden"
                     onClick={() => handleSort(col.key)}
                   >
                     <div className="flex items-center gap-1">
@@ -195,11 +196,15 @@ export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps)
                           : String(val);
                       const isText = typeof val === "string";
                       return (
-                        <TableCell key={col.key} className="text-xs text-gray-700">
+                        <TableCell
+                          key={col.key}
+                          style={{ width: col.width, minWidth: col.width, maxWidth: col.width }}
+                          className="text-xs text-gray-700 overflow-hidden whitespace-nowrap"
+                        >
                           {isText ? (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <span className="block max-w-[150px] truncate cursor-default">
+                                <span className="block truncate cursor-default">
                                   {display}
                                 </span>
                               </TooltipTrigger>
@@ -208,7 +213,7 @@ export function DataTable({ data, loading, onSync, syncStatus }: DataTableProps)
                               </TooltipContent>
                             </Tooltip>
                           ) : (
-                            <span className="text-right block">{display}</span>
+                            <span className="text-right block truncate">{display}</span>
                           )}
                         </TableCell>
                       );
