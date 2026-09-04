@@ -4,6 +4,7 @@ import {
 } from "recharts";
 import { aggregateByField, formatCompactNumber, type BudgetRow } from "@/services/sheetData";
 import { cn } from "@/lib/utils";
+import { Download } from "lucide-react";
 
 interface ComparisonChartProps {
   data: BudgetRow[];
@@ -49,8 +50,34 @@ const CustomBarLabel = ({ x, y, width, value }: { x: number; y: number; width: n
   );
 };
 
+function ExportPngButton({ chartRef, filename }: { chartRef: React.RefObject<HTMLDivElement | null>; filename: string }) {
+  const handleExport = () => {
+    const el = chartRef.current;
+    if (!el) return;
+    import("html-to-image").then(({ toPng }) => {
+      toPng(el, { backgroundColor: "#ffffff", pixelRatio: 2 }).then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = `${filename}.png`;
+        link.href = dataUrl;
+        link.click();
+      });
+    });
+  };
+  return (
+    <button
+      onClick={handleExport}
+      className="flex items-center gap-1 rounded-lg border border-white/40 bg-white/60 px-2 py-1 text-[10px] font-medium text-gray-500 transition-all hover:bg-white/80 hover:text-gray-700"
+      title="บันทึกเป็น PNG"
+    >
+      <Download className="size-3" />
+      PNG
+    </button>
+  );
+}
+
 export function ComparisonChart({ data }: ComparisonChartProps) {
   const [activeDimension, setActiveDimension] = React.useState(0);
+  const chartRef = React.useRef<HTMLDivElement>(null);
 
   const dimension = DIMENSIONS[activeDimension];
   const chartData = React.useMemo(
@@ -60,9 +87,12 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
 
   return (
     <div className="rounded-2xl border border-white/40 bg-white/50 p-6 shadow-lg backdrop-blur-xl">
-      <h3 className="mb-4 text-base font-semibold text-gray-800">
-        แผน vs ใช้ไป — จำแนกตาม {dimension.label}
-      </h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-base font-semibold text-gray-800">
+          แผน vs ใช้ไป — จำแนกตาม {dimension.label}
+        </h3>
+        <ExportPngButton chartRef={chartRef} filename={`comparison-${dimension.key}`} />
+      </div>
       {/* Dimension selector */}
       <div className="mb-4 flex flex-wrap gap-1.5">
         {DIMENSIONS.map((dim, i) => (
@@ -80,7 +110,7 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
           </button>
         ))}
       </div>
-      <div className="h-[320px]">
+      <div ref={chartRef} className="h-[320px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
