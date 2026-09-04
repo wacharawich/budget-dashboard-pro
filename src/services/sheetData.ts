@@ -90,6 +90,32 @@ export function formatDateBuddhist(date: Date): string {
   return `${day}/${month}/${year}`;
 }
 
+/**
+ * Fetch fiscal year (ปีงบประมาณ) from sheet "sheet99", Column Z.
+ * Returns null if the sheet/column is unavailable so callers can fall back.
+ */
+export async function fetchFiscalYear(): Promise<string | null> {
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("sheet99")}`;
+    const response = await fetch(url);
+    if (!response.ok) return null;
+
+    const text = await response.text();
+    const rows = csvToArray(text);
+
+    // Column Z = index 25. Skip the header ("ปีงบประมาณ") by requiring digits.
+    for (const row of rows) {
+      const raw = row[25];
+      if (!raw) continue;
+      const digits = raw.replace(/[^0-9]/g, "");
+      if (digits) return digits;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchSheetData(): Promise<BudgetRow[]> {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
 

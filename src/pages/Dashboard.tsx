@@ -6,7 +6,7 @@ import { InsightsSection } from "@/components/dashboard/InsightsSection";
 import { Top10Section } from "@/components/dashboard/Top10Section";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { MultiSelectFilter } from "@/components/dashboard/MultiSelectFilter";
-import { fetchSheetData, type BudgetRow, formatDateBuddhist } from "@/services/sheetData";
+import { fetchSheetData, fetchFiscalYear, type BudgetRow } from "@/services/sheetData";
 import { motion } from "framer-motion";
 import { RefreshCw, BarChart3, AlertTriangle, Calendar, Clock, Filter, Lightbulb, BarChart, ListOrdered, Table2, ChevronUp } from "lucide-react";
 
@@ -30,12 +30,14 @@ export default function Dashboard() {
   const [showOverBudgetOnly, setShowOverBudgetOnly] = React.useState(false);
 
   const [lastSync, setLastSync] = React.useState<Date | null>(null);
+  const [fiscalYear, setFiscalYear] = React.useState<string | null>(null);
 
   const loadData = React.useCallback(async () => {
     setSyncStatus("syncing");
     try {
-      const rows = await fetchSheetData();
+      const [rows, fy] = await Promise.all([fetchSheetData(), fetchFiscalYear()]);
       setData(rows);
+      if (fy) setFiscalYear(fy);
       setLastSync(new Date());
       setSyncStatus("success");
     } catch {
@@ -90,13 +92,12 @@ export default function Dashboard() {
     setFilterItem([]);
   };
 
-  // Fiscal year helper (Thai fiscal year: Oct–Sep)
-  const getFiscalYear = () => {
+  // Fallback: compute Thai fiscal year from today's date (Oct–Sep)
+  const fallbackFiscalYear = (() => {
     const now = new Date();
-    const year = now.getMonth() >= 9 ? now.getFullYear() + 543 : now.getFullYear() + 542;
-    return year;
-  };
-  const fiscalYear = getFiscalYear();
+    return String(now.getMonth() >= 9 ? now.getFullYear() + 543 : now.getFullYear() + 542);
+  })();
+  const displayFiscalYear = fiscalYear || fallbackFiscalYear;
 
   // Section navigation
   const sectionRefs = React.useRef<Record<string, HTMLDivElement | null>>({
@@ -196,7 +197,7 @@ export default function Dashboard() {
                 </h1>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-500">
                   <span className="flex items-center gap-1">
-                    <Calendar className="size-3" /> ปีงบประมาณ {fiscalYear}
+                    <Calendar className="size-3" /> ปีงบประมาณ {displayFiscalYear}
                   </span>
                   <span>·</span>
                   <span>โรงพยาบาลนางรอง</span>
